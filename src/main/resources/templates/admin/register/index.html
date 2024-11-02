@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/components/head :: head"></head>
+<body class="hold-transition skin-blue sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+
+<header th:replace="admin/components/header :: header"></header>
+
+    <!-- =============================================== -->
+
+    <!-- Left side column. contains the sidebar -->
+<aside th:replace="admin/components/sidebar :: sidebar"></aside>
+    <!-- =============================================== -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                Đăng ký hiến máu
+                <small>Đơn đăng ký</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/home"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                <li><a href="/register">Đăng ký hiến máu</a></li>
+
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            <!-- Default box -->
+            <div class="registration-container">
+                <h2>Thông tin cá nhân</h2>
+                <form id="registrationForm">
+                    <!-- Personal Information Section -->
+                    <div class="form-group">
+                        <label for="name">Họ và Tên:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthYear">Năm sinh:</label>
+                        <input type="text" id="birthYear" name="birthYear" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Giới tính:</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Chọn giới tính</option>
+                            <option value="male">Nam</option>
+                            <option value="female">Nữ</option>
+                            <option value="other">Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại:</label>
+                        <input type="text" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="idNumber">CMND/CCCD:</label>
+                        <input type="text" id="idNumber" name="idNumber" required>
+                    </div>
+            
+                    <!-- Address Section -->
+                    <h2>Địa chỉ thường trú</h2>
+                    <div class="form-group">
+                        <label for="city">TP:</label>
+                        <select id="city" name="city" required>
+                            <option value="">TP. Hồ Chí Minh</option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="district">Quận/Huyện:</label>
+                        <select id="district" name="district" required>
+                            <option value="">Chọn Quận/Huyện</option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ward">Xã/Phường:</label>
+                        <select id="ward" name="ward" required>
+                            <option value="">Chọn Xã/Phường</option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Nhập địa chỉ:</label>
+                        <input type="text" id="address" name="address">
+                    </div>
+            
+                    <!-- Additional Information Section -->
+                    <h2>Thông tin khác</h2>
+                    <div class="form-group">
+                        <label>Nhóm máu:</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="bloodType" value="O" required> Nhóm máu O</label>
+                            <label><input type="radio" name="bloodType" value="A"> Nhóm máu A</label>
+                            <label><input type="radio" name="bloodType" value="B"> Nhóm máu B</label>
+                            <label><input type="radio" name="bloodType" value="AB"> Nhóm máu AB</label>
+                            <label><input type="radio" name="bloodType" value="unknown"> Không biết</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Quý vị đã tiêm vaccine Covid chưa?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="vaccineStatus" value="vaccinated" required> Đã tiêm vaccine</label>
+                            <label><input type="radio" name="vaccineStatus" value="notVaccinated"> Chưa tiêm vaccine</label>
+                        </div>
+                    </div>
+            
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn">Đăng ký</button>
+                </form>
+            </div>
+            
+            <!-- /.box -->
+
+        </section>
+    </div>
+    <!-- /.content-wrapper -->
+
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 0.0.1
+        </div>
+        <strong>Copyright &copy; 2024 G14/OOP.</strong>
+    </footer>
+
+</div>
+<!-- ./wrapper -->
+
+
+<script th:src="@{/assets/js/jquery.min.js}"></script>
+<script th:src="@{/assets/js/jquery-ui.js}"></script>
+<script th:src="@{/assets/js/bootstrap.min.js}"></script>
+<script th:src="@{/assets/js/adminlte.min.js}"></script>
+<script th:src="@{/assets/js/dashboard.js}"></script>
+<script th:src="@{/assets/js/function.js}"></script>
+<script th:src="@{/assets/js/function.js}"></script>
+
+
+</body>
+</html>

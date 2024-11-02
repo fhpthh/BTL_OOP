@@ -1,4 +1,4 @@
-package org.dungha.blooddonateweb.controllers.admin;
+package org.dungha.blooddonateweb.controllers.profile;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
     @RequestMapping("/profile")
     public String profile() {
-        return "admin/index";
+        return "admin/profile/index";
     }
 }

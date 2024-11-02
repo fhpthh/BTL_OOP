@@ -4,10 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class HomeController {
+public class RegisterController {
 
-    @RequestMapping("/home")
-    public String home() {
-        return "/admin/home/index";
+    @RequestMapping("/register")
+    public String register() {
+        return "/admin/register/index";
     }
 }
