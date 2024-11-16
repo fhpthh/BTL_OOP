@@ -1,6 +1,6 @@
 package org.dungha.blooddonateweb.repository;
 
-import org.dungha.blooddonateweb.models.BloodDonors;
+import org.dungha.blooddonateweb.model.BloodDonors;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
 package org.dungha.blooddonateweb.controllers;
 
 
-import org.dungha.blooddonateweb.models.BloodDonors;
+import org.dungha.blooddonateweb.model.BloodDonors;
 import org.dungha.blooddonateweb.service.BloodDonorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

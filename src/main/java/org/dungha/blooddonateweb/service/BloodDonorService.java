@@ -1,6 +1,6 @@
 package org.dungha.blooddonateweb.service;
 
-import org.dungha.blooddonateweb.models.BloodDonors;
+import org.dungha.blooddonateweb.model.BloodDonors;
 import org.dungha.blooddonateweb.repository.BloodDonorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
