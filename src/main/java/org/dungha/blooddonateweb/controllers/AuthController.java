@@ -45,26 +45,16 @@ public class AuthController {
 
     // Login method (authenticate)
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto, HttpSession session) {
-        try {
-            // Authenticate user
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
+        // Thực hiện xác thực người dùng với Spring Security
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.getUsernameOrEmail(), loginDto.getPassword()));
 
-            // Store authentication in SecurityContext to manage session
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Lưu thông tin xác thực vào SecurityContext, qua đó Spring Security sẽ quản lý session cho bạn
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Lưu thông tin đăng nhập vào session
-            session.setAttribute("username", loginDto.getUsernameOrEmail());
-
-            // Trả về phản hồi thành công mà không gây ra chuyển hướng
-            return ResponseEntity.ok(new MessageResponse("User signed-in successfully!"));
-        } catch (Exception e) {
-            // Handle authentication failure
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new MessageResponse("Invalid username or password"));
-        }
+        // Nếu đăng nhập thành công, Spring Security sẽ tự động quản lý session cho người dùng.
+        return new ResponseEntity<>("User signed-in successfully!", HttpStatus.OK);
     }
 
     // Register new user

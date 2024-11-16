@@ -185,33 +185,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Lấy dữ liệu từ form dưới dạng FormData
         const formData = new FormData(this);
+        const usernameOrEmail = formData.get('usernameOrEmail');
+        const password = formData.get('password');
+
+        // Tạo payload cho sign-up
+        const data = {
+            usernameOrEmail, // Ensure this matches the BE DTO
+            password,
+        };
 
         // Gửi yêu cầu đăng nhập đến server
         fetch('/api/auth/signin', {
             method: 'POST',
-            body: formData  // Gửi dữ liệu form dưới dạng FormData
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Đăng nhập không thành công');
-                }
-                return response.json();  // Chuyển đổi phản hồi từ server thành JSON
-            })
+            .then(response => response.json())
             .then(data => {
-                // Kiểm tra nếu phản hồi có chứa token
-                if (data.token) {
-                    // Lưu token vào sessionStorage
-                    sessionStorage.setItem('authToken', data.token);  // Lưu vào sessionStorage
-                    showPopup('Đăng nhập thành công');  // Gọi hàm hiển thị popup thông báo thành công
-                    // Tiến hành chuyển hướng hoặc thực hiện các hành động khác
-                    window.location.href = '/home';  // Ví dụ chuyển hướng đến trang home
+                if (data.message === "success") {
+                    showPopup('Đăng nhập thành công');
                 } else {
-                    showPopup('Đăng nhập không thành công, vui lòng thử lại!');  // Nếu không có token, hiển thị thông báo lỗi
+                    showPopup('Đăng nhập không thành công, vui lòng thử lại');
                 }
             })
             .catch(error => {
-                console.error('Lỗi khi đăng nhập:', error);
-                showPopup('Có lỗi xảy ra. Vui lòng thử lại.');  // Hiển thị thông báo lỗi chung nếu có lỗi xảy ra trong quá trình gửi yêu cầu
+                console.error('Lỗi đăng nhập:', error);
+                showPopup('Có lỗi xảy ra. Vui lòng thử lại.');
             });
     });
 });

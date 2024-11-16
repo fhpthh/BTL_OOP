@@ -1,4 +1,4 @@
-package com.bloodSystem.main.models;
+package org.dungha.blooddonateweb.model;
 
 import jakarta.persistence.*;
 

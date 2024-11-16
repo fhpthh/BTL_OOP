@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/components/head :: head}">
+    <title>Hiến máu</title>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+
+    <header th:replace="~{admin/components/header :: header}"></header>
+
+    <aside th:replace="~{admin/components/sidebar :: sidebar}"></aside>
+
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>Trang chủ</h1>
+            <small>Người đăng ký hiến máu</small>
+        </section>
+
+        <section class="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h2>Thông tin về hiến máu</h2>
+                    <p>Hiến máu là một nghĩa cử cao đẹp. Dưới đây là danh sách các bệnh viện đang cần máu:</p>
+                </div>
+                <div class="box-body">
+                    Start creating your amazing application!
+                </div>
+                <div class="box-footer">Footer</div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs"><b>Version</b> 0.0.1</div>
+        <strong>Copyright &copy; 2024 G14/OOP.</strong>
+    </footer>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/assets/js/jquery.min.js}"></script>
+<script th:src="@{/assets/js/bootstrap.min.js}"></script>
+<script>
+
+</script>
+</body>
+</html>

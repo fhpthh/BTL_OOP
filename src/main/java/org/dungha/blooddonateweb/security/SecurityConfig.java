@@ -40,25 +40,28 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/api/auth/**")  // Bỏ qua CSRF cho các API auth
+                        .ignoringRequestMatchers("/api/auth/**") // Bỏ qua CSRF cho API auth
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/assets/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**", "/public/**").permitAll()  // Cho phép tất cả các tài nguyên tĩnh
-                        .requestMatchers("/home", "/", "/register", "/donation/create").permitAll()  // Cho phép trang chủ và form đăng ký
-                        .requestMatchers("/api/auth/signin", "/api/auth/signup", "/api/all_hospitals").permitAll()  // Các trang đăng nhập, đăng ký không cần xác thực
-                        .anyRequest().authenticated()  // Các yêu cầu khác yêu cầu đăng nhập
+                        .requestMatchers("/assets/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**", "/public/**").permitAll()
+                        .requestMatchers("/home/donor", "/home/hospital", "/", "/register", "/donation/create").permitAll()
+                        .requestMatchers("/api/auth/signin", "/api/auth/signup", "/api/all_hospitals").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/") // Trang đăng nhập tùy chỉnh
-                        .loginProcessingUrl("/api/auth/signin") // URL xử lý đăng nhập
-                        .defaultSuccessUrl("/home", true) // Chuyển hướng về trang chủ sau khi đăng nhập thành công
-                        .failureUrl("/login?error=true") // Chuyển hướng về trang login nếu đăng nhập thất bại
+                        .loginPage("/login") // Trang login
+                        .loginProcessingUrl("/api/auth/signin") // Endpoint xử lý đăng nhập
+                        .successHandler(authenticationSuccessHandler()) // Xử lý thành công
+                        .failureHandler(authenticationFailureHandler()) // Xử lý thất bại
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout") // URL để logout
-                        .logoutSuccessUrl("/home") // Chuyển hướng về trang chủ sau khi logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/home")
                         .permitAll()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Sử dụng JWT, không cần session
                 );
 
         return http.build();
@@ -67,44 +70,38 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            // Kiểm tra quyền của người dùng và chuyển hướng theo vai trò
             boolean isAdmin = authentication.getAuthorities().stream()
-                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("3"));
             boolean isUser = authentication.getAuthorities().stream()
-                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_USER"));
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("1"));
             boolean isHospital = authentication.getAuthorities().stream()
-                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_HOSPITAL"));
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("2"));
 
             if (isAdmin) {
-                response.sendRedirect("/admin/home"); // Trang dành cho admin
+                response.sendRedirect("/admin/home");
             } else if (isUser) {
-                response.sendRedirect("/user/home"); // Trang dành cho user
+                response.sendRedirect("/home/donor");
             } else if (isHospital) {
-                response.sendRedirect("/hospital/dashboard"); // Trang dành cho hospital
+                response.sendRedirect("/home/hospital");
             } else {
-                response.sendRedirect("/home"); // Trang chủ nếu không có vai trò
+                response.sendRedirect("/home");
             }
         };
     }
 
     @Bean
     public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new SimpleUrlAuthenticationFailureHandler() {
-            public void onAuthenticationFailure(javax.servlet.http.HttpServletRequest request,
-                                                javax.servlet.http.HttpServletResponse response,
-                                                org.springframework.security.core.AuthenticationException exception) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json;charset=UTF-8");
-                Map<String, String> result = new HashMap<>();
-                result.put("error", "Login failed. Please check your credentials.");
-                try {
-                    PrintWriter writer = response.getWriter();
-                    writer.write(new ObjectMapper().writeValueAsString(result));
-                    writer.flush();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        return (request, response, exception) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+
+            Map<String, String> result = new HashMap<>();
+            result.put("error", "Login failed. Please check your credentials.");
+            result.put("message", exception.getMessage());
+
+            PrintWriter writer = response.getWriter();
+            writer.write(new ObjectMapper().writeValueAsString(result));
+            writer.flush();
         };
     }
 }
