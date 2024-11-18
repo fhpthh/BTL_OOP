@@ -9,13 +9,14 @@ import org.dungha.blooddonateweb.dto.response.SignUpDto;
 import org.dungha.blooddonateweb.dto.response.MessageResponse;
 import org.dungha.blooddonateweb.repository.RoleRepository;
 import org.dungha.blooddonateweb.repository.UserRepository;
+import org.dungha.blooddonateweb.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.servlet.http.HttpSession;
@@ -25,8 +26,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -43,29 +44,43 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     // Login method (authenticate)
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
         try {
             // Thực hiện xác thực người dùng với Spring Security
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginDto.getUsernameOrEmail(), loginDto.getPassword())
+                            loginDto.getUsernameOrEmail(),
+                            loginDto.getPassword()
+                    )
             );
 
-            // Lưu thông tin xác thực vào SecurityContext, qua đó Spring Security sẽ quản lý session cho bạn
+            // Lưu thông tin xác thực vào SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            // Tạo JWT từ thông tin đăng nhập
+            String jwt = jwtTokenProvider.generateToken(authentication.getName(), authorities);
 
-            // Nếu đăng nhập thành công, Spring Security sẽ tự động quản lý session cho người dùng.
-            return new ResponseEntity<>("User signed-in successfully!", HttpStatus.OK);
-
-        } catch (BadCredentialsException e) {
-            // Xử lý trường hợp thông tin đăng nhập không đúng
-            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
+            List<String> roles = authorities.stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+            // Tạo response JSON bằng Map
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Login successful");
+            response.put("token", jwt);
+            response.put("roles", roles);
+            System.out.println("JWT Token: " + jwt);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            // Xử lý lỗi không mong muốn
-            return new ResponseEntity<>("Authentication failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
 
@@ -90,7 +105,7 @@ public class AuthController {
             user.setName(signUpDto.getName());
             user.setUsername(signUpDto.getUsername());
             user.setEmail(signUpDto.getEmail());
-            user.setPassword(signUpDto.getPassword());
+            user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
 
             // Assign role
             Role role = roleRepository.findByName(RoleName.valueOf("ROLE_" + signUpDto.getRole().toUpperCase()))
@@ -119,5 +134,17 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
+    }
+    @GetMapping("/roles")
+    public ResponseEntity<?> getUserRoles() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Lấy danh sách roles của user
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(roles);
     }
 }

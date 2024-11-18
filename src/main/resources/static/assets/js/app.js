@@ -14,6 +14,8 @@ fetch('donor/profile/1')
     })
     .catch(error => console.log('Error: ', error));
 
+
+
 fetch('https://provinces.open-api.vn/api/?depth=1')
     .then(response => response.json())
     .then(cities => {
@@ -153,7 +155,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // Gửi dữ liệu đến server
         fetch('/donation/create', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
         })
             .then(response => response.json())
             .then(data => {
@@ -203,19 +208,30 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
             .then(response => {
-                if (response.ok) {
-                    // Nếu đăng nhập thành công
-                    return response.json(); // Phân tích cú pháp JSON của phản hồi
-                } else {
+                if (!response.ok) {
                     throw new Error('Đăng nhập không thành công');
                 }
+                return response.json(); // Chuyển đổi phản hồi thành JSON
             })
             .then(data => {
-                // Kiểm tra nếu server trả về "success"
-                if (data.message === "User signed-in successfully!") {
-                    showPopup('Đăng nhập thành công');
-                } else {
-                    showPopup('Đăng nhập không thành công, vui lòng thử lại');
+                if (data.roles && data.roles.includes("ROLE_USER")) {
+                    localStorage.setItem('authToken', data.token);
+                    showPopup('Đăng nhập thành công!');
+                    setTimeout(() => {
+                        window.location.href = '/home/donor';
+                    }, 500);
+                }
+                else if (data.roles && data.roles.includes("ROLE_HOSPITAL"))
+                {
+                    localStorage.setItem('authToken', data.token);
+
+                    showPopup('Đăng nhập thành công!');
+                    setTimeout(() => {
+                        window.location.href = '/home/hospital';
+                    }, 500);
+                }
+                else {
+                    showPopup('Bạn không có quyền truy cập. Vui lòng thử lại.');
                 }
             })
             .catch(error => {

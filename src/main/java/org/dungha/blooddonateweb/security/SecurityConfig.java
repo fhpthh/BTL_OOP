@@ -37,29 +37,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/api/auth/**", "/donor/**", "donation/**") // Bỏ qua CSRF cho API auth
+                        .ignoringRequestMatchers("/api/auth/**") // Bỏ qua CSRF cho API auth
                 )
-                .authorizeHttpRequests(authorize -> authorize
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/assets/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**", "/public/**").permitAll()  // Cho phép tất cả các tài nguyên tĩnh
+                        .requestMatchers("/home", "/").permitAll()  // Cho phép trang chủ và form đăng ký
+                        .requestMatchers("/api/auth/signin", "/api/auth/signup", "/api/all_hospitals").permitAll()  // Các trang đăng nhập, đăng ký không cần xác thực
                         .requestMatchers("/assets/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**", "/public/**").permitAll()
-                        .requestMatchers("/home/donor", "/home/hospital", "/", "/register", "/donation/create").permitAll()
+                        .requestMatchers("/home/donor","/home/hospital","/home", "/").permitAll()
                         .requestMatchers("/api/auth/signin", "/api/auth/signup", "/api/all_hospitals").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .loginPage("/login") // Trang login
-                        .loginProcessingUrl("/api/auth/signin") // Endpoint xử lý đăng nhập
-                        .successHandler(authenticationSuccessHandler()) // Xử lý thành công
-                        .failureHandler(authenticationFailureHandler()) // Xử lý thất bại
-                        .permitAll()
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/home")
-                        .permitAll()
-                );
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -68,11 +64,11 @@ public class SecurityConfig {
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
             boolean isAdmin = authentication.getAuthorities().stream()
-                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("3"));
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
             boolean isUser = authentication.getAuthorities().stream()
-                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("1"));
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_USER"));
             boolean isHospital = authentication.getAuthorities().stream()
-                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("2"));
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_HOSPITAL"));
 
             if (isAdmin) {
                 response.sendRedirect("/admin/home");

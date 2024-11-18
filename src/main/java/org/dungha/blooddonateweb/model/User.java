@@ -24,10 +24,9 @@ public class User {
     private String username;
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> roles;
-
+    private Set<Role> roles = new HashSet<>();
     public void setRole(String role) {
         // Optionally set the user's role (not necessary here as roles are assigned via the RoleRepository)
     }
