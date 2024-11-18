@@ -202,9 +202,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Content-Type': 'application/json'
             }
         })
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    // Nếu đăng nhập thành công
+                    return response.json(); // Phân tích cú pháp JSON của phản hồi
+                } else {
+                    throw new Error('Đăng nhập không thành công');
+                }
+            })
             .then(data => {
-                if (data.message === "success") {
+                // Kiểm tra nếu server trả về "success"
+                if (data.message === "User signed-in successfully!") {
                     showPopup('Đăng nhập thành công');
                 } else {
                     showPopup('Đăng nhập không thành công, vui lòng thử lại');
@@ -217,9 +225,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Hàm hiển thị popup (cần tùy chỉnh theo cách bạn muốn hiển thị thông báo)
+// Hàm hiển thị popup
 function showPopup(message) {
-    alert(message);  // Chỉ đơn giản sử dụng alert, nhưng bạn có thể thay đổi thành thông báo đẹp hơn nếu cần
+    alert(message); // Có thể thay thế bằng cách hiển thị một popup tùy chỉnh
 }
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('signUpFormSubmit').addEventListener('submit', function (event) {

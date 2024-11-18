@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,15 +47,26 @@ public class AuthController {
     // Login method (authenticate)
     @PostMapping("/signin")
     public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
-        // Thực hiện xác thực người dùng với Spring Security
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+        try {
+            // Thực hiện xác thực người dùng với Spring Security
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDto.getUsernameOrEmail(), loginDto.getPassword())
+            );
 
-        // Lưu thông tin xác thực vào SecurityContext, qua đó Spring Security sẽ quản lý session cho bạn
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            // Lưu thông tin xác thực vào SecurityContext, qua đó Spring Security sẽ quản lý session cho bạn
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Nếu đăng nhập thành công, Spring Security sẽ tự động quản lý session cho người dùng.
-        return new ResponseEntity<>("User signed-in successfully!", HttpStatus.OK);
+            // Nếu đăng nhập thành công, Spring Security sẽ tự động quản lý session cho người dùng.
+            return new ResponseEntity<>("User signed-in successfully!", HttpStatus.OK);
+
+        } catch (BadCredentialsException e) {
+            // Xử lý trường hợp thông tin đăng nhập không đúng
+            return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            // Xử lý lỗi không mong muốn
+            return new ResponseEntity<>("Authentication failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Register new user

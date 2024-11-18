@@ -40,7 +40,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/api/auth/**") // Bỏ qua CSRF cho API auth
+                        .ignoringRequestMatchers("/api/auth/**", "/donor/**", "donation/**") // Bỏ qua CSRF cho API auth
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/assets/**", "/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**", "/public/**").permitAll()
@@ -59,9 +59,6 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/home")
                         .permitAll()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Sử dụng JWT, không cần session
                 );
 
         return http.build();
