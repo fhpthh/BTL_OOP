@@ -9,6 +9,7 @@ import org.dungha.blooddonateweb.dto.response.SignUpDto;
 import org.dungha.blooddonateweb.dto.response.MessageResponse;
 import org.dungha.blooddonateweb.repository.RoleRepository;
 import org.dungha.blooddonateweb.repository.UserRepository;
+import org.dungha.blooddonateweb.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,19 +45,40 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     // Login method (authenticate)
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
-        // Thực hiện xác thực người dùng với Spring Security
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
+        try {
+            // Thực hiện xác thực người dùng với Spring Security
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDto.getUsernameOrEmail(),
+                            loginDto.getPassword()
+                    )
+            );
 
-        // Lưu thông tin xác thực vào SecurityContext, qua đó Spring Security sẽ quản lý session cho bạn
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            // Lưu thông tin xác thực vào SecurityContext
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Nếu đăng nhập thành công, Spring Security sẽ tự động quản lý session cho người dùng.
-        return new ResponseEntity<>("User signed-in successfully!", HttpStatus.OK);
+            // Tạo JWT từ thông tin đăng nhập
+            String jwt = jwtTokenProvider.generateToken(authentication.getName());
+
+            // Tạo response JSON bằng Map
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Login successful");
+            response.put("token", jwt);
+            System.out.println("JWT Token: " + jwt);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
     }
 
     // Register new user
@@ -78,7 +102,7 @@ public class AuthController {
             user.setName(signUpDto.getName());
             user.setUsername(signUpDto.getUsername());
             user.setEmail(signUpDto.getEmail());
-            user.setPassword(signUpDto.getPassword());
+            user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
 
             // Assign role
             Role role = roleRepository.findByName(RoleName.valueOf("ROLE_" + signUpDto.getRole().toUpperCase()))
