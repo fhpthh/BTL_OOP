@@ -28,24 +28,12 @@
 
         <!-- Main content -->
         <section class="content">
-
-            <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Thông tin tài khoản</h3>
-
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-                            <i class="fa fa-times"></i>
-                        </button>
-                    </div>
                 </div>
-                <div class="box-body">
-                    <p><strong>First Name:</strong> <span class="firstName"></span></p>
-                    <p><strong>Last Name:</strong> <span class="lastName"></span></p>
+                <div class="box-body" id="displaySection" >
+                    <p><strong>Name:</strong> <span class="firstName"></span></p>
                     <p><strong>Sex:</strong> <span id="sex"></span></p>
                     <p><strong>Phone:</strong> <span id="phone"></span></p>
                     <p><strong>Total Blood Donated:</strong> <span id="totalBloodDonated"></span></p>
@@ -53,17 +41,57 @@
                     <p><strong>Birthday:</strong> <span id="birthday"></span></p>
                     <p><strong>Address:</strong> <span id="address"></span></p>
                     <p><strong>Email:</strong> <span id="email"></span></p>
+                    <button id="editButton" class="btn btn-primary">Chỉnh sửa</button>
+                </div>
+                <div class="box-body" id="hospitalDisplaySection">
+                    <p><strong>Name:</strong> <span class="hospitalName"></span></p>
+                    <p><strong>Phone:</strong> <span id="hospitalPhone"></span></p>
+                    <p><strong>Address:</strong> <span id="hospitalAddress"></span></p>
+                    <p><strong>Email:</strong> <span id="hospitalEmail"></span></p>
+                    <button id="hospitalEditButton" class="btn btn-primary">Chỉnh sửa</button>
                 </div>
             </div>
-            <!-- /.box -->
 
+            <div id="editForm" style="display: none;">
+                <form>
+                    <div class="form-group">
+                        <label for="editSex">Sex:</label>
+                        <select class="form-control" id="editSex">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPhone">Phone:</label>
+                        <input type="text" class="form-control" id="editPhone">
+                    </div>
+                    <div class="form-group">
+                        <label for="editAddress">Address:</label>
+                        <input type="text" class="form-control" id="editAddress">
+                    </div>
+                    <button type="button" id="saveChanges" class="btn btn-primary">Save Changes</button>
+                    <button type="button" id="cancelEdit" class="btn btn-secondary">Cancel</button>
+                </form>
+            </div>
+            <div id="editFormHospital" style="display: none;">
+                <form>
+                    <div class="form-group">
+                        <label for="editPhoneHospital">Phone:</label>
+                        <input type="text" class="form-control" id="editPhoneHospital">
+                    </div>
+                    <div class="form-group">
+                        <label for="editAddressHospital">Address:</label>
+                        <input type="text" class="form-control" id="editAddressHospital">
+                    </div>
+                    <button type="button" id="saveChangesHospital" class="btn btn-primary">Save Changes</button>
+                    <button type="button" id="cancelEditHospital" class="btn btn-secondary">Cancel</button>
+                </form>
+            </div>
         </section>
-    </div>
-    <!-- /.content-wrapper -->
-
+</div>
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-            <b>Version</b> 0.0.1
+            <b>Version</b> 0.22.1
         </div>
         <strong>Copyright &copy; 2024 G14/OOP.</strong>
     </footer>
@@ -80,7 +108,134 @@
 <script th:src="@{/assets/js/dashboard.js}"></script>
 <script th:src="@{/assets/js/function.js}"></script>
 <script th:src="@{/assets/js/function.js}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButton = document.getElementById('editButton');
+        const hospitalEditButton = document.getElementById('hospitalEditButton');
+        const saveButton = document.getElementById('saveChanges');
+        const saveButtonHospital = document.getElementById('saveChangesHospital');
+        const cancelButton = document.getElementById('cancelEdit');
+        const cancelButtonHospital = document.getElementById('cancelEditHospital');
+        const editForm = document.getElementById('editForm');
+        const editFormHospital = document.getElementById('editFormHospital');
+        const displaySection = document.getElementById('displaySection');
+        const hospitalDisplaySection = document.getElementById('hospitalDisplaySection');
+        const role = localStorage.getItem('role');
 
+        if(role === 'ROLE_USER')
+        {
+            hospitalDisplaySection.style.display = 'none';
+        // Hiển thị form chỉnh sửa
+        editButton.addEventListener('click', function () {
+            displaySection.style.display = 'none';
+            editForm.style.display = 'block';
+
+            // Load dữ liệu hiện tại vào form
+            document.getElementById('editSex').value = document.getElementById('sex').textContent;
+            document.getElementById('editPhone').value = document.getElementById('phone').textContent;
+            document.getElementById('editAddress').value = document.getElementById('address').textContent;
+        });
+
+
+        // Lưu thay đổi
+        saveButton.addEventListener('click', function () {
+            const userId = localStorage.getItem('idToken'); // ID của người dùng từ localStorage
+            const donorData = {
+                sex: document.getElementById('editSex').value,
+                phone: document.getElementById('editPhone').value,
+                address: document.getElementById('editAddress').value,
+            };
+
+            fetch(`/api/donor/${localStorage.getItem('idToken')}/edit`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(donorData),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to update donor profile');
+                    }
+                })
+                .then(updatedDonor => {
+                    // Cập nhật giao diện
+                    document.getElementById('sex').textContent = updatedDonor.sex;
+                    document.getElementById('phone').textContent = updatedDonor.phone;
+                    document.getElementById('address').textContent = updatedDonor.address;
+
+                    alert('Cập nhật thành công!');
+                    editForm.style.display = 'none';
+                    displaySection.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Cập nhật thất bại!');
+                });
+        });
+
+        // Hủy chỉnh sửa
+        cancelButton.addEventListener('click', function () {
+            editForm.style.display = 'none';
+            displaySection.style.display = 'block';
+        });
+        }
+        else if (role === 'ROLE_HOSPITAL')
+        {
+            displaySection.style.display='none';
+            hospitalEditButton.addEventListener('click',function (){
+                hospitalDisplaySection.style.display = 'none';
+                editFormHospital.style.display = 'block';
+
+                document.getElementById('editPhoneHospital').value = document.getElementById('hospitalPhone').textContent;
+                document.getElementById('editAddressHospital').value = document.getElementById('hospitalAddress').textContent;
+            })
+            saveButtonHospital.addEventListener('click', function () {
+                const userId = localStorage.getItem('idToken'); // ID của người dùng từ localStorage
+                const hospitalData = {
+                    phone: document.getElementById('editPhoneHospital').value,
+                    address: document.getElementById('editAddressHospital').value,
+                };
+
+                fetch(`/api/hospitals/${localStorage.getItem('idToken')}/edit`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(hospitalData),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Failed to update donor profile');
+                        }
+                    })
+                    .then(updatedHospital => {
+                        // Cập nhật giao diện
+                        document.getElementById('hospitalPhone').textContent = updatedHospital.phone;
+                        document.getElementById('hospitalAddress').textContent = updatedHospital.address;
+
+                        alert('Cập nhật thành công!');
+                        editFormHospital.style.display = 'none';
+                        hospitalDisplaySection.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Cập nhật thất bại!');
+                    });
+            });
+
+            // Hủy chỉnh sửa
+            cancelButtonHospital.addEventListener('click', function () {
+                editFormHospital.style.display = 'none';
+                hospitalDisplaySection.style.display = 'block';
+            });
+        }
+    });
+</script>
 
 </body>
 </html>

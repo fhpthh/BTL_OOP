@@ -1,5 +1,6 @@
 package org.dungha.blooddonateweb.service;
 
+import org.dungha.blooddonateweb.model.BloodDonors;
 import org.dungha.blooddonateweb.model.Hospital;
 import org.dungha.blooddonateweb.repository.HospitalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HospitalService {
@@ -20,9 +22,14 @@ public class HospitalService {
         return repo.findAll();
     }
 
-    //Get danh sach benh vien theo id
-    public Hospital getHospitalsById(int id) {
-        return repo.findById(id).get();
+    public Hospital getHospitalByUserId(Long userId) {
+        return repo.findByUserId(userId).orElseThrow(() -> new RuntimeException("Hospital not found for user id: " + userId));
+    }
+
+    public Hospital getHospitalById(int id) {
+        // Giả sử bạn đang sử dụng Spring Data JPA
+        Optional<Hospital> hospitalOptional = repo.findById(id);
+        return hospitalOptional.orElse(null); // Trả về null nếu không tìm thấy
     }
 
     //Them benh vien vao
@@ -30,8 +37,23 @@ public class HospitalService {
         return repo.save(hospital);
     }
     //update thong tin
-    public Hospital updateHospital(int id, Hospital hospital, MultipartFile imageFile) throws IOException {
-        return repo.save(hospital);
+    public Optional<Hospital> updateHospitalProfile(String userId, Hospital hospital){
+        Optional<Hospital> existingHospital = repo.findByUserId(Long.valueOf(userId));
+
+        if (existingHospital.isPresent()) {
+            Hospital hospitalToUpdate = existingHospital.get();
+
+            // Cập nhật các trường cần thay đổi
+            hospitalToUpdate.setPhone(hospital.getPhone());
+            hospitalToUpdate.setAddress(hospital.getAddress());
+
+            // Lưu lại vào cơ sở dữ liệu
+            repo.save(hospitalToUpdate);
+            return Optional.of(hospitalToUpdate);
+        }
+
+        // Trả về Optional rỗng nếu không tìm thấy
+        return Optional.empty();
     }
 
     //delete thong tin

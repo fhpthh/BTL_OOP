@@ -7,165 +7,240 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/css/font-awesome.min.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/AdminLTE.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/WebCSS.css}">
     <link rel="stylesheet" th:href="@{/assets/css/_all-skins.min.css}">
     <link rel="stylesheet" th:href="@{/assets/css/jquery-ui.css}">
     <link rel="stylesheet" th:href="@{/asset/css/style.css}" />
     <script th:src="@{/assets/js/angular.min.js}"></script>
     <script th:src="@{/assets/js/app.js}"></script>
     <style>
-        /* Container for both forms */
+        /* General layout */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            flex-direction: column;
+
+            /* Background with image and gradient overlay */
+            background: linear-gradient(
+                    rgba(255, 174, 174, 0.71),
+                    rgba(255, 193, 160, 0.8)
+            ),
+            url('/assets/images/anh1.jpg') no-repeat center center/cover;
+        }
+
         .wrapper-login {
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start;
+            width: 100%;
             padding: 0 20px;
-            background-color: #f4f4f4;
+            flex: 1; /* Ensures the wrapper fills the available space */
+            margin-top: 40px; /* Add margin from the top */
+            margin-bottom: 70px; /* Give space for fixed footer */
         }
 
-        /* Main container for the forms */
         .forms-container {
             display: flex;
             gap: 20px;
-            max-width: 1000px;
             width: 100%;
-            justify-content: space-between;
+            justify-content: center;
+            align-content: center;
+            animation: fadeIn 1s ease;
         }
 
-        /* Styling for each form */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .form-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 45%;
-            min-width: 300px;
+            background: rgba(255, 255, 255, 0.85); /* Transparent background */
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px; /* Fixed width for larger screens */
+            min-width: 280px; /* Minimum width for smaller screens */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease;
         }
 
-        /* Form headings */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         .form-container h2 {
             text-align: center;
             margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
+            font-size: 30px;
+            font-weight: bold;
+            color: #FF6F61;
         }
 
-        /* Form fields */
-        .form-container input, .form-container select {
+        .form-container input,
+        .form-container select {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 20px;
             border: 1px solid #ddd;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
         }
 
-        /* Buttons */
+        .form-container input:focus,
+        .form-container select:focus {
+            border-color: #FF6F61;
+            box-shadow: 0 0 8px rgba(255, 111, 97, 0.3);
+            outline: none;
+        }
+
         .form-container button {
             width: 100%;
-            padding: 10px;
-            background-color: #007bff;
+            padding: 16px;
+            background-color: #FF6F61;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
-        /* Links */
+        .form-container button:hover {
+            background-color: #FF3D31;
+            transform: scale(1.05);
+        }
+
         .form-container p {
             text-align: center;
+            font-size: 14px;
+            color: #666;
         }
 
         .form-container a {
-            color: #007bff;
+            color: #FF6F61;
             text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
         }
 
-        /* Responsive design for smaller screens */
-        @media (max-width: 768px) {
-            .forms-container {
-                flex-direction: column;
-                gap: 10px;
-            }
+        .form-container a:hover {
+            color: #D32F2F;
+            text-decoration: underline;
+        }
 
+        /* Footer */
+        .main-footerlogin {
+            text-align: center;
+            font-size: 14px;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 10px 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-footerlogin .pull-right {
+            display: none;
+        }
+
+        /* Toggle buttons for switching forms */
+        .toggle-btn {
+            display: block;
+            margin: 10px auto;
+            padding: 12px 20px;
+            background-color: #FF6F61;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background-color: #FF3D31;
+            transform: scale(1.05);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
             .form-container {
-                width: 100%;
-                min-width: auto;
+                max-width: 90%; /* Allow the form to take up most of the screen width */
+                padding: 20px;
+            }
+        }
+
+        /* Two-column layout for smaller forms */
+        @media (max-width: 600px) {
+            .form-container input,
+            .form-container select {
+                padding: 12px;
             }
         }
     </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
-<!-- Site wrapper -->
 <div class="wrapper-login">
-
     <div class="forms-container">
         <!-- Login Form -->
         <div class="form-container" id="loginForm">
-            <h2>Login</h2>
+            <h2>Đăng nhập</h2>
             <form id="loginFormSubmit">
                 <input type="text" id="usernameOrEmail" name="usernameOrEmail" placeholder="Username or Email" required>
                 <input type="password" id="password" name="password" placeholder="Password" required>
-                <button type="submit">Login</button>
+                <button type="submit">Đăng nhập</button>
+                <p>Bạn chưa có tài khoản? <a href="javascript:void(0)" id="showSignUp">Đăng ký</a></p>
             </form>
         </div>
 
         <!-- SignUp Form -->
-        <div class="form-container" id="signUpForm">
-            <h2>Sign Up</h2>
+        <div class="form-container" id="signUpForm" style="display: none;">
+            <h2>Đăng ký tài khoản</h2>
             <form id="signUpFormSubmit">
-                <input type="text" id="name" name="name" placeholder="Name" required>
+                <input type="text" id="name" name="name" placeholder="Tên" required>
                 <input type="text" id="username" name="username" placeholder="Username" required>
                 <input type="email" id="email" name="email" placeholder="Email" required>
                 <input type="password" id="signUpPassword" name="password" placeholder="Password" required>
                 <select id="role" name="role" required>
-                    <option value="">Select Role</option>
-                    <option value="USER">User</option>
-                    <option value="ADMIN">Admin</option>
-                    <option value="HOSPITAL">Hospital</option>
+                    <option value="">Bạn là</option>
+                    <option value="USER">Người hiến máu</option>
+                    <option value="HOSPITAL">Bệnh viện</option>
                 </select>
-                <button type="submit">Sign Up</button>
+                <button type="submit">Đăng ký</button>
+                <p>Đã có tài khoản? <a href="javascript:void(0)" id="showLogin">Đăng nhập</a></p>
             </form>
         </div>
     </div>
-
-    <footer class="main-footerlogin">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 0.0.1
-        </div>
-        <strong>Copyright &copy; 2024 G14/OOP.</strong>
-    </footer>
-
 </div>
-<!-- ./wrapper -->
 
-<!-- jQuery 3 -->
-<script th:src="@{/assets/js/jquery.min.js}"></script>
-<script th:src="@{/assets/js/jquery-ui.js}"></script>
-<script th:src="@{/assets/js/bootstrap.min.js}"></script>
-<script th:src="@{/assets/js/adminlte.min.js}"></script>
-<script th:src="@{/assets/js/dashboard.js}"></script>
-<script th:src="@{/assets/js/function.js}"></script>
-
-<script>
-    // Get references to the forms and the links
-    const loginForm = document.getElementById('loginForm');
-    const signUpForm = document.getElementById('signUpForm');
-    const showSignUpLink = document.getElementById('showSignUp');
-    const showLoginLink = document.getElementById('showLogin');
-
-    // Add event listeners to show/hide the forms
-    if (showSignUpLink && showLoginLink) {
-        showSignUpLink.addEventListener('click', function() {
-            loginForm.style.display = 'none';
-            signUpForm.style.display = 'block';
-        });
-
-        showLoginLink.addEventListener('click', function() {
-            signUpForm.style.display = 'none';
-            loginForm.style.display = 'block';
-        });
-    }
-</script>
+<footer class="main-footerlogin">
+    <strong>&copy; 2024 G14/OOP. Version 0.22.1</strong>
+</footer>
 </body>
 </html>

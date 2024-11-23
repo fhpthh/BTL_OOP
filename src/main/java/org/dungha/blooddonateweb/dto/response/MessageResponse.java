@@ -1,5 +1,7 @@
 package org.dungha.blooddonateweb.dto.response;
 
+import org.dungha.blooddonateweb.model.Donation;
+
 public class MessageResponse {
 
     private String message;
@@ -9,6 +11,9 @@ public class MessageResponse {
     }
 
     public MessageResponse(String message, String token) {
+    }
+
+    public MessageResponse(String donationCreatedSuccessfully, Donation savedDonation) {
     }
 
     public String getMessage() {

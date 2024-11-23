@@ -8,8 +8,7 @@ import java.io.Serializable;
 @Builder
 public class DonorDTO implements Serializable {
     private String id;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String phone;
     private String email;
     private String createdAt;

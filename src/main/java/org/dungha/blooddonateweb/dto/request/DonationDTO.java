@@ -16,8 +16,10 @@ public class DonationDTO {
     private String address;
     private String bloodType;
     private Boolean vaccineStatus;
-    private double height;
-    private double weight;
+    private int height;
+    private int weight;
     private double bmi;
     private int hospitalId;
+    private int donorId;
+    private String status;
 }

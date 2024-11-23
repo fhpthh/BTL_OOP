@@ -17,29 +17,44 @@ public class DonationService {
         return donationRepository.findAll();
     }
 
-    public Donation getDonationById(int donationId) {
-        return donationRepository.findById(donationId).orElse(null);
+    public Donation getDonationById(int id) {
+        return donationRepository.findById(id).orElse(null);
+    }
+
+    public List<Donation> getDonationsByDonorId(int donorId) {
+        // Gọi repository hoặc database để tìm các đơn hiến máu theo donorId
+        return donationRepository.findByDonorId(donorId);
+    }
+
+    public List<Donation> getDonationsByHospitalId(Long hospitalId) {
+        // Assuming you have a method in your repository to query donations by hospitalId
+        return donationRepository.findByHospitalId(hospitalId);
     }
 
     public Donation createDonation(DonationDTO donationDto) {
+        // Tạo đối tượng Donation mới và gán các giá trị từ DonationDTO
         Donation donation = new Donation();
         donation.setName(donationDto.getName());
-        donation.setBirthYear(donationDto.getBirthYear());       // Updated to match "birthYear"
-        donation.setGender(donationDto.getGender());             // Updated to match "gender"
+        donation.setBirthYear(donationDto.getBirthYear());       // Cập nhật theo "birthYear"
+        donation.setGender(donationDto.getGender());             // Cập nhật theo "gender"
         donation.setEmail(donationDto.getEmail());
-        donation.setPhone(donationDto.getPhone());               // Updated to match "phone"
-        donation.setIdNumber(donationDto.getIdNumber());         // Updated to match "idNumber"
-        donation.setCity(donationDto.getCity());                 // Updated to match "city"
-        donation.setDistrict(donationDto.getDistrict());         // Updated to match "district"
-        donation.setWard(donationDto.getWard());                 // Updated to match "ward"
-        donation.setAddress(donationDto.getAddress());           // Updated to match "address"
-        donation.setBloodType(donationDto.getBloodType());       // Updated to match "bloodType"
-        donation.setVaccineStatus(Boolean.parseBoolean(String.valueOf(donationDto.getVaccineStatus()))); // Updated to match "vaccineStatus"
-        donation.setHeight(donationDto.getHeight());
-        donation.setWeight(donationDto.getWeight());
-        donation.setBmi(donationDto.getBmi());
-        donation.setHospitalId(donationDto.getHospitalId());
-        return donationRepository.save(donation); // Returns the saved Donation object
+        donation.setPhone(donationDto.getPhone());               // Cập nhật theo "phone"
+        donation.setIdNumber(donationDto.getIdNumber());         // Cập nhật theo "idNumber"
+        donation.setCity(donationDto.getCity());                 // Cập nhật theo "city"
+        donation.setDistrict(donationDto.getDistrict());         // Cập nhật theo "district"
+        donation.setWard(donationDto.getWard());                 // Cập nhật theo "ward"
+        donation.setAddress(donationDto.getAddress());           // Cập nhật theo "address"
+        donation.setBloodType(donationDto.getBloodType());       // Cập nhật theo "bloodType"
+        donation.setVaccineStatus(donationDto.getVaccineStatus());  // Cập nhật theo "vaccineStatus"
+        donation.setHeight(donationDto.getHeight());             // Cập nhật theo "height"
+        donation.setWeight(donationDto.getWeight());             // Cập nhật theo "weight"
+        donation.setBmi(donationDto.getBmi());                   // Cập nhật theo "bmi"
+        donation.setHospitalId(donationDto.getHospitalId());     // Cập nhật theo "hospitalId"
+        donation.setDonorId(donationDto.getDonorId());
+        donation.setStatus(donationDto.getStatus());
+
+        // Lưu donation vào cơ sở dữ liệu
+        return donationRepository.save(donation); // Lưu và trả về đối tượng Donation đã lưu
     }
 
     public void updateDonation(Donation donation) {

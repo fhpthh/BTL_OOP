@@ -17,22 +17,23 @@ public class BloodDonorService {
         return bloodDonorRepository.findById(id);
     }
 
-    public Optional<BloodDonors> updateDonorProfile(BloodDonors donor) {
-        Optional<BloodDonors> existingDonor = bloodDonorRepository.findById(donor.getId());
+    public Optional<BloodDonors> updateDonorProfile(Long userId, BloodDonors donor) {
+        // Kiểm tra xem donor có tồn tại không
+        Optional<BloodDonors> existingDonor = bloodDonorRepository.findByUserId(userId);
+
         if (existingDonor.isPresent()) {
-            BloodDonors updatedDonor = existingDonor.get();
-            updatedDonor.setFirstname(donor.getFirstname());
-            updatedDonor.setLastname(donor.getLastname());
-            updatedDonor.setSex(donor.getSex());
-            updatedDonor.setPhone(donor.getPhone());
-            updatedDonor.setBloodGroup(donor.getBloodGroup());
-            updatedDonor.setBirthday(donor.getBirthday());
-            updatedDonor.setAddress(donor.getAddress());
-            updatedDonor.setEmail(donor.getEmail());
-            bloodDonorRepository.save(updatedDonor);
-            return Optional.of(updatedDonor);
-        } else {
-            return Optional.empty();
+            BloodDonors donorToUpdate = existingDonor.get();
+
+            donorToUpdate.setSex(donor.getSex());
+            donorToUpdate.setPhone(donor.getPhone());
+            donorToUpdate.setAddress(donor.getAddress());
+
+            // Lưu lại vào cơ sở dữ liệu
+            bloodDonorRepository.save(donorToUpdate);
+            return Optional.of(donorToUpdate);
         }
+
+        // Trả về Optional rỗng nếu không tìm thấy
+        return Optional.empty();
     }
 }

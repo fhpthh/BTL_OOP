@@ -12,7 +12,7 @@ public class HomeController {
         return "admin/home/index"; // View for donors
     }
     // Mapping for donor home page
-    @RequestMapping("/donor")
+    @RequestMapping("/user")
     public String homeForDonor() {
         return "admin/home/index"; // View for donors
     }
@@ -21,9 +21,5 @@ public class HomeController {
     @RequestMapping("/hospital")
     public String homeForHospital() {
         return "admin/home/index2"; // View for hospitals
-    }
-    @RequestMapping("/register")
-    public String register() {
-        return "/admin/register/index";
     }
 }

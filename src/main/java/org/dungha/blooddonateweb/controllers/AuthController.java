@@ -1,12 +1,14 @@
 package org.dungha.blooddonateweb.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.dungha.blooddonateweb.dto.response.RedirectResponse;
-import org.dungha.blooddonateweb.model.Role;
-import org.dungha.blooddonateweb.model.RoleName;
-import org.dungha.blooddonateweb.model.User;
+import org.dungha.blooddonateweb.model.*;
 import org.dungha.blooddonateweb.dto.response.LoginDto;
 import org.dungha.blooddonateweb.dto.response.SignUpDto;
 import org.dungha.blooddonateweb.dto.response.MessageResponse;
+import org.dungha.blooddonateweb.repository.BloodDonorRepository;
+import org.dungha.blooddonateweb.repository.HospitalRepository;
 import org.dungha.blooddonateweb.repository.RoleRepository;
 import org.dungha.blooddonateweb.repository.UserRepository;
 import org.dungha.blooddonateweb.security.JwtTokenProvider;
@@ -19,12 +21,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import javax.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,9 +41,14 @@ public class AuthController {
     private RoleRepository roleRepository;
 
     @Autowired
+    private BloodDonorRepository bloodDonorRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private HospitalRepository hospitalRepository;
 
     // Login method (authenticate)
     @PostMapping("/signin")
@@ -63,6 +66,16 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             // Tạo JWT từ thông tin đăng nhập
+
+            String usernameOrEmail = authentication.getName();
+            Optional<User> userOptional = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
+
+            if (userOptional.isEmpty()) {
+                throw new RuntimeException("User not found");
+            }
+
+            User user = userOptional.get();
+
             String jwt = jwtTokenProvider.generateToken(authentication.getName(), authorities);
 
             List<String> roles = authorities.stream()
@@ -73,6 +86,7 @@ public class AuthController {
             response.put("message", "Login successful");
             response.put("token", jwt);
             response.put("roles", roles);
+            response.put("id", user.getId());
             System.out.println("JWT Token: " + jwt);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -115,6 +129,21 @@ public class AuthController {
             // Save user to the database
             userRepository.save(user);
 
+            if (role.getName().equals(RoleName.ROLE_USER)) {
+                BloodDonors bloodDonors = new BloodDonors();
+                bloodDonors.setName(user.getName()); // Set the name from the user
+                bloodDonors.setEmail(user.getEmail()); // Set the email from the user
+                bloodDonors.setUser(user);
+                // Save the BloodDonors entry
+                bloodDonorRepository.save(bloodDonors);
+            }
+            else if(role.getName().equals(RoleName.ROLE_HOSPITAL)) {
+                Hospital hospital = new Hospital();
+                hospital.setName(user.getName());
+                hospital.setEmail(user.getEmail());
+                hospital.setUser(user);
+                hospitalRepository.save(hospital);
+            }
             // Return success message
             return ResponseEntity.ok(new MessageResponse("User registered successfully"));
         } catch (RuntimeException e) {
@@ -135,6 +164,20 @@ public class AuthController {
                     .body(null);
         }
     }
+
+    @GetMapping(path = "/user/{id}")
+    public ResponseEntity<User> donorProfile(@PathVariable("id") int id) {
+        // Lấy người dùng từ repository
+        Optional<User> donor = userRepository.findById((long) id);  // Đảm bảo userRepository có phương thức này
+
+        // Kiểm tra xem người dùng có tồn tại hay không
+        if (donor.isPresent()) {
+            return ResponseEntity.ok(donor.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/roles")
     public ResponseEntity<?> getUserRoles() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -146,5 +189,25 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(roles);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser(HttpServletRequest request) {
+        try {
+            // Xóa thông tin xác thực khỏi SecurityContext
+            SecurityContextHolder.clearContext();
+
+            // Hủy phiên làm việc (session) nếu có
+            HttpSession session = request.getSession(false); // Trả về null nếu không có session
+            if (session != null) {
+                session.invalidate(); // Hủy session
+            }
+
+            // Trả về phản hồi thành công
+            return ResponseEntity.ok(new MessageResponse("Logout thành công"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Có lỗi xảy ra khi logout: " + e.getMessage()));
+        }
     }
 }

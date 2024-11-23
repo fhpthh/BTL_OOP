@@ -12,30 +12,125 @@
     <aside th:replace="~{admin/components/sidebar :: sidebar}"></aside>
 
     <div class="content-wrapper">
-        <section class="content-header">
-            <h1>Trang chủ</h1>
-            <small>Hiến máu</small>
-        </section>
-
-        <section class="content">
             <div class="box">
                 <div class="box-header with-border">
                     <h2>Thông tin về hiến máu</h2>
                     <p>Hiến máu là một nghĩa cử cao đẹp. Dưới đây là danh sách các bệnh viện đang cần máu:</p>
+                </div>
+                <div id="user-donation-list" class="user-donation-list-container">
+                    <h2 class="text-4xl font-medium text-center text-white bg-red-500 rounded-full px-6 py-2">Danh sách đơn đăng ký của người dùng</h2>
+                    <ul id="donation-list" class="donation-list">
+                        <!-- Donation requests will be rendered here by JavaScript -->
+                    </ul>
+                </div>
+                <div class="box-body">
+                    <!-- Benefits Section -->
+                    <div id = "benefit-card" class="w-full flex justify-center">
+                        <h1 class="text-4xl font-bold text-center text-white bg-red-500 rounded-full px-6 py-2">
+                            QUYỀN LỢI KHI THAM GIA HIẾN MÁU
+                        </h1>
+                    </div>
+                    <div class="benefit-container">
+
+                        <div class="benefit-card">
+                            <span class="benefit-title">Được cấp Giấy chứng nhận hiến máu tình nguyện</span>
+                            <br></br>
+                            <ul class="benefit-list">
+                                <li>Giấy chứng nhận được trao cho người hiến máu sau mỗi lần hiến máu tình nguyện.</li>
+                                <li>Có giá trị để được truyền máu miễn phí bằng số lượng máu đã hiến, khi bản thân người hiến có nhu cầu sử dụng máu tại tất cả các cơ sở y tế công lập trên toàn quốc.</li>
+                                <li>Người hiến máu cần xuất trình Giấy chứng nhận để làm cơ sở cho các cơ sở y tế thực hiện việc truyền máu miễn phí.</li>
+                                <li>Cơ sở y tế có trách nhiệm ký, đóng dấu, xác nhận số lượng máu đã truyền miễn phí cho người hiến máu vào giấy chứng nhận.</li>
+                            </ul>
+                        </div>
+
+                        <div class="benefit-card">
+                            <span class="benefit-title">Được bồi dưỡng trực tiếp</span>
+                            <br></br>
+                            <ul class="benefit-list">
+                                <li>Ăn nhẹ, nước uống tại chỗ: tương đương 30.000 đồng (1 chai trà xanh không độ, 01 hộp chocopie 66gram, 01 hộp bánh Goute 35,5gram).</li>
+                                <li>Hỗ trợ chi phí đi lại (bằng tiền mặt): 50.000 đồng.</li>
+                                <li>Nhận phần quà tặng giá trị tương đương:</li>
+                                <li>100.000đ khi hiến máu 250ml</li>
+                                <li>150.000đ khi hiến máu 350ml</li>
+                                <li>180.000đ khi hiến máu 450ml</li>
+                            </ul>
+                        </div>
+
+                        <div class="benefit-card">
+                            <span class="benefit-title">Được tư vấn về sức khoẻ</span>
+                            <br></br>
+                            <ul class="benefit-list">
+                                <li>Được giải thích về quy trình hiến máu và các tai biến có thể xảy ra trong và sau khi hiến máu.</li>
+                                <li>Được cung cấp thông tin về dấu hiệu, triệu chứng do nhiễm vi rút viêm gan, HIV và một số bệnh lây qua đường truyền máu, tình dục khác.</li>
+                                <li>Được xét nghiệm sàng lọc một số vi rút lây qua đường truyền máu, tình dục (HIV, Giang mai, viêm gan,…) sau khi hiến máu.</li>
+                                <li>Được tư vấn hướng dẫn cách chăm sóc sức khỏe, tư vấn về kết quả bất thường sau hiến máu.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <section id="target-content" class="w-full my-8 px-4">
+                    <div id="target-card" class="w-full flex justify-center">
+                        <h1 class="text-4xl font-bold text-center text-white bg-red-500 rounded-full px-6 py-2">
+                            TIÊU CHUẨN KHI THAM GIA HIẾN MÁU
+                        </h1>
+                    </div>
+                    <div class="relative bg-gradient-to-r from-red-300 via-red-200 to-red-300 p-2 md:p-[4rem] rounded-3xl flex flex-col md:flex-row my-8">
+                        <!-- Background Image -->
+                        <div class="absolute inset-0 bg-cover bg-center opacity-65 filter blur-sm" style="background-image: url('anh1.jpeg');"></div>
+
+                        <!-- Content Container -->
+                        <div class="w-full flex flex-wrap-target gap-4 justify-center z-10">
+                            <div class="box-target">
+                                Cân nặng: Nam ≥ 45 kg Nữ ≥ 45 kg
+                            </div>
+                            <div class="box-target">
+                                Người khỏe mạnh trong độ tuổi từ đủ 18 đến 60 tuổi
+                            </div>
+                            <div class="box-target">
+                                Mang theo chứng minh nhân dân/hộ chiếu
+                            </div>
+                            <div class="box-target">
+                                Không nghiện ma túy, rượu bia và các chất kích thích
+                            </div>
+                            <div class="box-target">
+                                Không mắc các bệnh mãn tính hoặc cấp tính về tim mạch, huyết áp, hô hấp, dạ dày…
+                            </div>
+                            <div class="box-target">
+                                Thời gian tối thiểu giữa 2 lần hiến máu là 12 tuần đối với cả Nam và Nữ
+                            </div>
+                            <div class="box-target">
+                                Không mắc hoặc không có các hành vi nguy cơ lây nhiễm HIV, không nhiễm viêm gan B, viêm gan C, và các virus lây qua đường truyền máu
+                            </div>
+                            <div class="box-target">
+                                Chỉ số huyết sắc tố (Hb) ≥120g/l (≥125g/l nếu hiến từ 350ml trở lên)
+                            </div>
+                            <div class="box-target">
+                                Kết quả test nhanh âm tính với kháng nguyên bề mặt của siêu vi B
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+                <section id="blood-requests-section" >
+                    <div class="w-full flex justify-center">
+                        <h1 class="text-4xl font-medium text-center text-white bg-red-500 rounded-full px-6 py-2">
+                            Thông báo yêu cầu hiến máu từ các bệnh viện
+                        </h1>
+                    </div>
+                    <div id="blood-requests-list" class="blood-requests-container">
+                        <!-- Blood requests will be rendered here by JavaScript -->
+                    </div>
+                </section>
+                <section id="hospital-section" >
                     <div id="hospital-list" class="hospital-list">
                         <!-- Hospitals will be rendered here by JavaScript -->
                     </div>
-                </div>
-                <div class="box-body">
-                    Start creating your amazing application!
-                </div>
-                <div class="box-footer">Footer</div>
+                </section>
             </div>
-        </section>
     </div>
 
     <footer class="main-footer">
-        <div class="pull-right hidden-xs"><b>Version</b> 0.0.1</div>
+        <div class="pull-right hidden-xs"><b>Version</b> 0.22.1</div>
         <strong>Copyright &copy; 2024 G14/OOP.</strong>
     </footer>
 </div>
@@ -43,8 +138,6 @@
 <!-- Scripts -->
 <script th:src="@{/assets/js/jquery.min.js}"></script>
 <script th:src="@{/assets/js/bootstrap.min.js}"></script>
-<script>
 
-</script>
 </body>
 </html>

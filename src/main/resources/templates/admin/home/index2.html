@@ -18,21 +18,96 @@
         </section>
 
         <section class="content">
-            <div class="box">
+            <div class="box-hospital">
                 <div class="box-header with-border">
                     <h2>Thông tin về hiến máu</h2>
-                    <p>Hiến máu là một nghĩa cử cao đẹp. Dưới đây là danh sách các bệnh viện đang cần máu:</p>
                 </div>
-                <div class="box-body">
-                    Start creating your amazing application!
+                <div class="donor-list" id="donorList">
+                    <h2>Danh sách người đăng ký hiến máu tại cơ sở</h2>
+                    <!-- List will be populated here -->
+
+                    <div class="table-container">
+                        <table class="donor-table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Blood Type</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="donationsContainer">
+                            <!-- Donations will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
-                <div class="box-footer">Footer</div>
+                    <div id="popupDetail" class="hidden">
+                        <div class="popup-content">
+                            <span id="closePopup" class="close-button">&times;</span>
+                            <h2>Thông tin chi tiết đơn đăng ký</h2>
+                            <div id="donationDetails">
+                                <!-- Chi tiết sẽ được hiển thị ở đây -->
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
+
+        </section>
+
+        <section class="content">
+            <div class="request-container">
+
+                <form id="bloodRequestForm">
+                    <h2>Đăng thông tin kêu gọi hiến máu</h2>
+                    <label for="bloodGroupId">Nhóm máu:</label>
+                    <select
+                            id="bloodGroupId"
+                            name="bloodGroupId"
+                            required
+                    >
+                        <option value="" disabled selected>Chọn nhóm máu</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="O">O</option>
+                        <option value="AB">AB</option>
+                    </select><br>
+
+                    <label for="quantityRequested">Số lượng yêu cầu (đơn vị: cc):</label>
+                    <input
+                            type="number"
+                            id="quantityRequested"
+                            name="quantityRequested"
+                            min="1"
+                            required
+                    /><br>
+
+                    <button type="submitForm">Gửi yêu cầu</button>
+                </form>
+                <div class="hospital-requests">
+                    <h2>Danh sách yêu cầu hiến máu</h2>
+                    <table class="requests-table">
+                        <thead>
+                        <tr>
+                            <th>Nhóm máu</th>
+                            <th>Số lượng (cc)</th>
+                            <th>Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody id="requestsContainer">
+                        <!-- Danh sách yêu cầu sẽ được hiển thị ở đây -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
+
     </div>
 
     <footer class="main-footer">
-        <div class="pull-right hidden-xs"><b>Version</b> 0.0.1</div>
+        <div class="pull-right hidden-xs"><b>Version</b> 0.22.1</div>
         <strong>Copyright &copy; 2024 G14/OOP.</strong>
     </footer>
 </div>
@@ -40,8 +115,7 @@
 <!-- Scripts -->
 <script th:src="@{/assets/js/jquery.min.js}"></script>
 <script th:src="@{/assets/js/bootstrap.min.js}"></script>
-<script>
 
-</script>
+
 </body>
 </html>

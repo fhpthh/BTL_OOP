@@ -1,55 +1,30 @@
 package org.dungha.blooddonateweb.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "blood_request")
 public class BloodRequest {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "hospital_id")
     private int hospitalId;
-    private String dateRequested;
-    private int bloodGroupId;
+
+
+    @Column(name = "blood_group_id")
+    private String bloodGroupId;
+
+    @Column(name = "quantity_requested")
     private int quantityRequested;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getHospitalId() {
-        return hospitalId;
-    }
-
-    public void setHospitalId(int hospitalId) {
-        this.hospitalId = hospitalId;
-    }
-
-    public String getDateRequested() {
-        return dateRequested;
-    }
-
-    public void setDateRequested(String dateRequested) {
-        this.dateRequested = dateRequested;
-    }
-
-    public int getBloodGroupId() {
-        return bloodGroupId;
-    }
-
-    public void setBloodGroupId(int bloodGroupId) {
-        this.bloodGroupId = bloodGroupId;
-    }
-
-    public int getQuantityRequested() {
-        return quantityRequested;
-    }
-
-    public void setQuantityRequested(int quantityRequested) {
-        this.quantityRequested = quantityRequested;
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }

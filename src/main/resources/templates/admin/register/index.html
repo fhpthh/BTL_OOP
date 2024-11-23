@@ -20,95 +20,71 @@
             <div class="registration-container">
                 <h2>Thông tin cá nhân</h2>
                 <form id="registrationForm">
-                    <div class="form-group">
-                        <label for="name">Họ và Tên:</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="birthYear">Năm sinh:</label>
-                        <input type="text" id="birthYear" name="birthYear" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="gender">Giới tính:</label>
-                        <select id="gender" name="gender" required>
-                            <option value="">Chọn giới tính</option>
-                            <option value="male">Nam</option>
-                            <option value="female">Nữ</option>
-                            <option value="other">Khác</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="height">Chiều cao (cm):</label>
-                        <input type="number" id="height" name="height" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="weight">Cân nặng (kg):</label>
-                        <input type="number" id="weight" name="weight" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bmi">Chỉ số BMI:</label>
-                        <input type="text" id="bmi" name="bmi" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Số điện thoại:</label>
-                        <input type="text" id="phone" name="phone" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="idNumber">CMND/CCCD:</label>
-                        <input type="text" id="idNumber" name="idNumber" required>
-                    </div>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required/><br>
 
-                    <h2>Địa chỉ thường trú</h2>
-                    <div class="form-group">
-                        <label for="city">TP:</label>
-                        <select id="city" name="city" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="district">Quận/Huyện:</label>
-                        <select id="district" name="district" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="ward">Xã/Phường:</label>
-                        <select id="ward" name="ward" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Nhập địa chỉ:</label>
-                        <input type="text" id="address" name="address">
-                    </div>
+                    <label for="birthYear">Birth Year:</label>
+                    <input type="text" id="birthYear" name="birthYear" required/><br>
 
-                    <h2>Thông tin khác</h2>
-                    <div class="form-group">
-                        <label>Nhóm máu:</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="bloodType" value="O" required> Nhóm máu O</label>
-                            <label><input type="radio" name="bloodType" value="A"> Nhóm máu A</label>
-                            <label><input type="radio" name="bloodType" value="B"> Nhóm máu B</label>
-                            <label><input type="radio" name="bloodType" value="AB"> Nhóm máu AB</label>
-                            <label><input type="radio" name="bloodType" value="unknown"> Không biết</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Quý vị đã tiêm vaccine Covid chưa?</label>
-                        <div class="radio-group" >
-                            <label><input type="radio" name="vaccineStatus" value="True" required> Đã tiêm vaccine</label>
-                            <label><input type="radio" name="vaccineStatus" value="False" > Chưa tiêm vaccine</label>
-                        </div>
-                    </div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" required>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select><br>
 
-                    <button type="submit" class="submit-btn">Đăng ký</button>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required/><br>
+
+                    <label for="phone">Phone:</label>
+                    <input type="text" id="phone" name="phone" required/><br>
+
+                    <label for="idNumber">CCCD/CMND:</label>
+                    <input type="text" id="idNumber" name="idNumber" required/><br>
+
+                    <label for="city">TP:</label>
+                    <select id="city" name="city" required></select>
+
+                    <label for="district">Quận/Huyện:</label>
+                    <select id="district" name="district" required></select>
+
+                    <label for="ward">Xã/Phường:</label>
+                    <select id="ward" name="ward" required></select>
+
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address" required/><br>
+
+                    <label for="bloodType">Blood Type:</label>
+                    <select id="bloodType" name="bloodType" required>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="O">O</option>
+                        <option value="AB">AB</option>
+                    </select><br>
+
+                    <label for="vaccineStatus">Vaccine Status:</label>
+                    <input type="checkbox" id="vaccineStatus" name="vaccineStatus"/><br>
+
+                    <label for="height">Height (cm):</label>
+                    <input type="number" id="height" name="height" required/><br>
+
+                    <label for="weight">Weight (kg):</label>
+                    <input type="number" id="weight" name="weight" required/><br>
+
+                    <label for="bmi">BMI:</label>
+                    <input type="number" step="0.01" id="bmi" name="bmi" required/><br>
+
+                    <button type="submit">Submit</button>
                 </form>
             </div>
         </section>
     </div>
 
     <footer class="main-footer">
-        <div class="pull-right hidden-xs"><b>Version</b> 0.0.1</div>
+        <div class="pull-right hidden-xs"><b>Version</b> 0.22.1</div>
         <strong>Copyright &copy; 2024 G14/OOP.</strong>
     </footer>
+
+    <!-- Popup Notification -->
     <div id="popupNotification" style="display:none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, -50%); background: #fff; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
         <span id="popupMessage"></span>
         <button onclick="this.parentElement.style.display='none';">Đóng</button>
@@ -121,22 +97,5 @@
 <script th:src="@{/assets/js/bootstrap.min.js}"></script>
 <script th:src="@{/assets/js/adminlte.min.js}"></script>
 <script th:src="@{/assets/js/dashboard.js}"></script>
-<script>
-    const heightInput = document.getElementById("height");
-    const weightInput = document.getElementById("weight");
-    const bmiInput = document.getElementById("bmi");
-
-    heightInput.addEventListener("input", calculateBMI);
-    weightInput.addEventListener("input", calculateBMI);
-
-    function calculateBMI() {
-        const height = parseFloat(heightInput.value) / 100; // Convert cm to meters
-        const weight = parseFloat(weightInput.value);
-        if (height > 0 && weight > 0) {
-            const bmi = (weight / (height * height)).toFixed(2);
-            bmiInput.value = bmi;
-        } else {
-            bmiInput.value = "";
-        }
-    }
-</script>
+</body>
+</html>
