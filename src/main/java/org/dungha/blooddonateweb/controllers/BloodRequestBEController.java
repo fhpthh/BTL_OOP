@@ -1,25 +1,22 @@
 package org.dungha.blooddonateweb.controllers;
 
-import org.dungha.blooddonateweb.dto.request.RequestDTO;
 import org.dungha.blooddonateweb.dto.response.ApiResponse;
-import org.dungha.blooddonateweb.dto.response.MessageResponse;
 import org.dungha.blooddonateweb.model.BloodRequest;
 import org.dungha.blooddonateweb.service.BloodRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/request")
-public class BloodRequestController {
+public class BloodRequestBEController {
     @Autowired
     private final BloodRequestService bloodRequestService;
 
-    public BloodRequestController(BloodRequestService bloodRequestService) {
+    public BloodRequestBEController(BloodRequestService bloodRequestService) {
         this.bloodRequestService = bloodRequestService;
     }
 

@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/donation")
-public class DonationController {
+public class DonationBEController {
 
     @Autowired
     private final DonationService donationService;

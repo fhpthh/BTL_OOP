@@ -16,7 +16,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/user_roles")
-public class UserRolesController {
+public class UserRolesBEController {
 
     @Autowired
     private UserRepository userRepository;

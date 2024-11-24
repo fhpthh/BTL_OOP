@@ -1,6 +1,5 @@
 package org.dungha.blooddonateweb.controllers;
 
-import org.dungha.blooddonateweb.model.BloodDonors;
 import org.dungha.blooddonateweb.model.Hospital;
 import org.dungha.blooddonateweb.repository.HospitalRepository;
 import org.dungha.blooddonateweb.service.HospitalService;
@@ -10,13 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-public class HospitalController {
+public class HospitalBEController {
 
     @Autowired
     private HospitalService service;

@@ -2,7 +2,6 @@ package org.dungha.blooddonateweb.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.dungha.blooddonateweb.dto.response.RedirectResponse;
 import org.dungha.blooddonateweb.model.*;
 import org.dungha.blooddonateweb.dto.response.LoginDto;
 import org.dungha.blooddonateweb.dto.response.SignUpDto;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AuthBEController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
