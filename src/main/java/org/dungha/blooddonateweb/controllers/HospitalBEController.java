@@ -27,7 +27,7 @@ public class HospitalBEController {
     public ResponseEntity<List<Hospital>> getAllHospitals(){
         return new ResponseEntity<>(service.getAllHospitals(), HttpStatus.OK);
     }
-    //Thong tin benh vien theo Id
+    //Thong tin benh vien theo Id tai khoan trong table user
     @GetMapping("/hospitals/{userId}")
     public ResponseEntity<Hospital> getHospitalProfile(@PathVariable Long userId) {
         try {
@@ -37,6 +37,8 @@ public class HospitalBEController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+    //thong tin benh vien theo id trong table hospital
 
     @GetMapping("/hospital/{id}")
     public ResponseEntity<Hospital> getHospitalById(@PathVariable int id) {
@@ -55,16 +57,20 @@ public class HospitalBEController {
         }
     }
 
+    //Tao tai khoan benh vien   
+
     @PostMapping("/hospitals")
-    public ResponseEntity<?> addHospital(@RequestPart Hospital hospital, @RequestPart MultipartFile imageFile){
+    public ResponseEntity<?> addHospital(@RequestPart Hospital hospital){
         try{
-            Hospital hospital1 = service.addHospital(hospital, imageFile);
+            Hospital hospital1 = service.addHospital(hospital);
             return new ResponseEntity<>(hospital1, HttpStatus.CREATED);
         }
         catch(Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    //Chinh sua thong tin benh vien
 
     @PutMapping(path = "/hospitals/{userId}/edit")
     public ResponseEntity<Hospital> updateHospitalProfile(@PathVariable String userId, @RequestBody Hospital hospital) {
@@ -75,6 +81,8 @@ public class HospitalBEController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    //Xoa tai khoan benh vien
 
     @DeleteMapping("/hospitals/{id}")
     public ResponseEntity<String> deleteHospital(@PathVariable Long userId){

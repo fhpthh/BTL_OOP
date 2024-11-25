@@ -33,7 +33,7 @@ public class HospitalService {
     }
 
     //Them benh vien vao
-    public Hospital addHospital(Hospital hospital, MultipartFile imageFile) throws IOException {
+    public Hospital addHospital(Hospital hospital) throws IOException {
         return repo.save(hospital);
     }
     //update thong tin
